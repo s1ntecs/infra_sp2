@@ -31,7 +31,7 @@ YaTube API это RESTful API, позволяющий создавать и ре
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://github.com/krapiwin/api_yamdb
+git clone https://github.com/s1ntecs/infra_sp2.git
 ```
 
 ```
