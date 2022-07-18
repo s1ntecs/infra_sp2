@@ -20,7 +20,7 @@ YaTube API это RESTful API, позволяющий создавать и ре
   различных веб-сервисовю
 - [Django REST Framework](https://www.django-rest-framework.org/) - фреймворк, расширяющий возможности Django и
   позволяющий быстро писать RESTful API для Django-проектов.
-- [Docker] [Docker-compose] (https://docs.docker.com/) - это  приложение для вашей среды Python, Wnidows, которое позволяет создавать контейнерные приложения и микросервисы и совместно использовать их.
+- [Docker](https://docs.docker.com/) - это  приложение для вашей среды Python, Wnidows, которое позволяет создавать контейнерные приложения и микросервисы и совместно использовать их.
 Конечно же YaTube API это ПО с открытым исходным кодом и [публичным репозиторием](https://github.com/krapiwin/api_yamdb)
 на GitHub и (https://hub.docker.com/repository/docker/sintecs/yamdb/) на DockerHub.
 
@@ -29,17 +29,23 @@ YaTube API это RESTful API, позволяющий создавать и ре
 ### Как запустить проект:
 
 
-Клонировать Docker репозиторий и перейти в него в командной строке:
+Клонировать GitHub репозиторий:
 
 ```
-docker pull sintecs/yamdb:v1.0
+git clone https://github.com/s1ntecs/infra_sp2.git
 
 ```
-
-Из директории infra вызвать в командной строке (wsl)
+Перейти в директорию infra
 
 ```
-docker-compose up -d --build # Команда собирает контейнеры и запускает их.
+Необходимо создать файл переменных окружения .env без переменных окружения наш сервис не будет работать.
+Образец заполнения файла можете посмотреть в example.env в директории infra.
+
+```
+После создания файла .env:
+Из директории infra вызвать (в командной строке (wsl))
+
+  - docker-compose up -d --build # Команда собирает контейнеры и запускает их.
 
 ```
 
