@@ -4,6 +4,7 @@
 
 YaTube API это RESTful API, позволяющий создавать и редактировать отзывы на различные произведения, оценивать их и
 оставлять комментарии к отзывам. В основе проекта лежат Django и Django REST Framework.
+Проект подготовлен для работы с docker.
 
 ## Особенности
 
@@ -19,68 +20,63 @@ YaTube API это RESTful API, позволяющий создавать и ре
   различных веб-сервисовю
 - [Django REST Framework](https://www.django-rest-framework.org/) - фреймворк, расширяющий возможности Django и
   позволяющий быстро писать RESTful API для Django-проектов.
-
-Конечно же YaTube API это ПО с открытым исходным кодом
-и [публичным репозиторием](https://github.com/krapiwin/api_yamdb)
-на GitHub.
+- [Docker] [Docker-compose] (https://docs.docker.com/) - это  приложение для вашей среды Python, Wnidows, которое позволяет создавать контейнерные приложения и микросервисы и совместно использовать их.
+Конечно же YaTube API это ПО с открытым исходным кодом и [публичным репозиторием](https://github.com/krapiwin/api_yamdb)
+на GitHub и (https://hub.docker.com/repository/docker/sintecs/yamdb/) на DockerHub.
 
 ## Начало работы
 
 ### Как запустить проект:
 
-Клонировать репозиторий и перейти в него в командной строке:
+
+Клонировать Docker репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://github.com/s1ntecs/infra_sp2.git
-```
-
-```
-cd api_yamdb
+docker pull sintecs/yamdb:v1.0
 
 ```
 
-Cоздать и активировать виртуальное окружение:
+Из директории infra вызвать в командной строке (wsl)
 
 ```
-python3 -m venv venv
-```
+docker-compose up -d --build # Команда собирает контейнеры и запускает их.
 
 ```
-source env/bin/activate
-```
 
-Установить зависимости из файла requirements.txt:
+По окончании работы docker-compose сообщит, что контейнеры собраны и запущены.
 
-```
-python3 -m pip install --upgrade pip
-```
+Теперь в контейнере web нужно выполнить миграции, создать суперпользователя и собрать статику:
 
 ```
-pip install -r requirements.txt
-```
-
-Модуль manage.py расположен в:
+docker-compose exec web python manage.py migrate
 
 ```
-api_final_yatube/api_yamdb/api_yamdb
-```
-
-Выполнить миграции:
+Создадим суперпользователя:
 
 ```
-python3 manage.py migrate
-```
-
-Запустить проект:
+docker-compose exec web python manage.py createsuperuser
 
 ```
-python3 manage.py runserver
+
+Соберем Статику:
+
+```
+docker-compose exec web python manage.py collectstatic --no-input
+
+```
+
+Применяем фикстуры для базы данных:
+
+```
+docker-compose exec web python manage.py loaddata fixtures.json
+
 ```
 
 API будет доступен по адресу:
 
 ```
-http://127.0.0.1:8000/api/v1/
+http://localhost/api/v1/
+
 ```
 
 ## Пользовательские роли
@@ -99,7 +95,7 @@ http://127.0.0.1:8000/api/v1/
 Получение списка всех категорий и создание новой(доступно только для роли 'Administrator') происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/categories/
+http://localhost/api/v1/categories/
 ```
 
 Пример ответа при GET запросе с параметрами offset и count:
@@ -123,14 +119,14 @@ http://127.0.0.1:8000/api/v1/categories/
 Редактирование категорий запрещено. Удаление категории происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/categories/{slug}/
+http://localhost/api/v1/categories/{slug}/
 ```
 
 
 Получение списка жанров и создание нового(доступно только для роли 'Administrator') происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/genres/
+http://localhost/api/v1/genres/
 ```
 Пример ответа:
 ```
@@ -152,13 +148,13 @@ http://127.0.0.1:8000/api/v1/genres/
 Получение конкретного жанра, а так же его редактирование запрещено. А удаление происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/genres/{slug}/
+http://localhost/api/v1/genres/{slug}/
 ```
 
 Получение списка произведений и создание нового происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/titles/
+http://localhost/api/v1/titles/
 ```
 
 Пример ответа:
@@ -176,7 +172,7 @@ http://127.0.0.1:8000/api/v1/titles/
 Для конкретной группы доступен только метод GET(id - первичный ключ таблицы Groups) на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/groups/{id}/
+http://localhost/api/v1/groups/{id}/
 ```
 
 Пример ответа:
@@ -192,7 +188,7 @@ http://127.0.0.1:8000/api/v1/groups/{id}/
 Следующий эндпоинт возвращает все подписки пользователя, сделавшего запрос. Анонимные запросы запрещены (метод GET):
 
 ```sh
-http://127.0.0.1:8000/api/v1/follow/
+http://localhost/api/v1/follow/
 ```
 
 Пример ответа:
@@ -209,13 +205,13 @@ http://127.0.0.1:8000/api/v1/follow/
 запрещены (метод POST):
 
 ```sh
-http://127.0.0.1:8000/api/v1/follow/
+http://localhost/api/v1/follow/
 ```
 
 Создание, обновление и верификация токена происходит на следущих эндпоинтах:
 
 ```sh
-http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/{review_id}/comments/
+http://localhost/api/v1/titles/{title_id}/reviews/{review_id}/comments/
 ```
 
 Пример ответа:
@@ -241,7 +237,7 @@ http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/{review_id}/comments/
 (доступно только для автора комментария, модератора или администратора) происходит на эндпоинте:
 
 ```sh
-http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/
+http://localhost/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/
 ```
 Пример ответа: 
 ```
@@ -256,8 +252,8 @@ http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/{review_id}/comments/{com
 Регистрация пользователя и получение jwt токена происходит на следующих эндпоинтах:
 
 ```sh
-http://127.0.0.1:8000/api/v1/auth/signup/
-http://127.0.0.1:8000/api/v1/auth/token/
+http://localhost/api/v1/auth/signup/
+http://localhost/api/v1/auth/token/
 ```
 
 ## Лицензия
